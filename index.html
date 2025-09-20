@@ -44,7 +44,7 @@
       e.preventDefault();
  fetch("https://script.google.com/macros/s/AKfycbwDyt4o-kHJGiCtx25z8CJm5YbIHZJI043abxf-2sexMlxkQ8DbAMNRUSn6FwiWeafI/exec", {
   method: "POST",
-  mode: "cors",   // 👈 allow CORS
+  mode: "no-cors",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
     name: document.getElementById("name").value,
@@ -54,15 +54,15 @@
     total: total.value
   })
 })
-.then(res => res.json())
-.then(data => {
-  document.getElementById("result").innerText = "✅ Submitted! Row: " + data.row;
+.then(() => {
+  document.getElementById("result").innerText = "✅ Submitted successfully!";
   form.reset();
   total.value = "";
 })
 .catch(err => {
   document.getElementById("result").innerText = "❌ Error: " + err;
 });
+
       });
     });
   </script>

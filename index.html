@@ -49,35 +49,40 @@
   <div id="result"></div>
 
   <script>
-    const form = document.getElementById("visitForm");
-    const result = document.getElementById("result");
+  const form = document.getElementById("visitForm");
+  const result = document.getElementById("result");
 
-    form.addEventListener("submit", function(e) {
-      e.preventDefault();
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
 
-      fetch("https://script.google.com/macros/s/AKfycbwIDBJjO_2LTQnERBLqUm4fsLQYz6spG47bbLZiNCAiL2XdwQRvF1HYS7KwIzRRC4bS/exec", {
-        method: "POST",
-        mode: "no-cors",   // disables CORS errors but won't return JSON
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: document.getElementById("email").value,
-          visitDate: document.getElementById("visitDate").value,
-          clinic: document.getElementById("clinic").value,
-          fileNumber: document.getElementById("fileNumber").value,
-          patientStatus: document.getElementById("patientStatus").value,
-          dob: document.getElementById("dob").value,
-          gender: document.getElementById("gender").value,
-          patientType: document.getElementById("patientType").value
-        })
+    fetch("https://script.google.com/macros/s/AKfycbwIDBJjO_2LTQnERBLqUm4fsLQYz6spG47bbLZiNCAiL2XdwQRvF1HYS7KwIzRRC4bS/exec", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: document.getElementById("email").value,
+        visitDate: document.getElementById("visitDate").value,
+        clinic: document.getElementById("clinic").value,
+        fileNumber: document.getElementById("fileNumber").value,
+        patientStatus: document.getElementById("patientStatus").value,
+        dob: document.getElementById("dob").value,
+        gender: document.getElementById("gender").value,
+        patientType: document.getElementById("patientType").value
       })
-      .then(() => {
-        result.innerText = "✅ Submitted! Check your sheet 'data'.";
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        result.innerText = "✅ Submitted! Data saved.";
         form.reset();
-      })
-      .catch(err => {
-        result.innerText = "❌ Error: " + err;
-      });
+      } else {
+        result.innerText = "⚠️ Error: " + data.message;
+      }
+    })
+    .catch(err => {
+      result.innerText = "❌ Fetch Error: " + err;
     });
-  </script>
+  });
+</script>
+
 </body>
 </html>

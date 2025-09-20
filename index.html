@@ -2,19 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Google Sheet Test Form</title>
+  <title>Patient Visit Form</title>
 </head>
 <body>
-  <h2>Test Form</h2>
-  <form id="testForm">
-    <input type="text" id="name" placeholder="Enter your name" required>
+  <h2>Patient Visit Form</h2>
+
+  <form id="visitForm">
+    <label>Email Address:</label><br>
+    <input type="email" id="email" required><br><br>
+
+    <label>Visit Date:</label><br>
+    <input type="date" id="visitDate" required><br><br>
+
+    <label>Clinic:</label><br>
+    <input type="text" id="clinic" required><br><br>
+
+    <label>File Number:</label><br>
+    <input type="text" id="fileNumber" required><br><br>
+
+    <label>Patient Status:</label><br>
+    <select id="patientStatus" required>
+      <option value="New">New</option>
+      <option value="Follow-up">Follow-up</option>
+    </select><br><br>
+
+    <label>Date of Birth:</label><br>
+    <input type="date" id="dob" required><br><br>
+
+    <label>Gender:</label><br>
+    <select id="gender" required>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select><br><br>
+
+    <label>Patient Type:</label><br>
+    <select id="patientType" required>
+      <option value="General">General</option>
+      <option value="ANC">ANC</option>
+      <option value="Pediatric">Pediatric</option>
+    </select><br><br>
+
     <button type="submit">Submit</button>
   </form>
 
   <div id="result"></div>
 
   <script>
-    const form = document.getElementById("testForm");
+    const form = document.getElementById("visitForm");
     const result = document.getElementById("result");
 
     form.addEventListener("submit", function(e) {
@@ -22,14 +57,21 @@
 
       fetch("https://script.google.com/macros/s/AKfycbwIDBJjO_2LTQnERBLqUm4fsLQYz6spG47bbLZiNCAiL2XdwQRvF1HYS7KwIzRRC4bS/exec", {
         method: "POST",
-        mode: "no-cors",   // 👈 first test without CORS errors
+        mode: "no-cors",   // disables CORS errors but won't return JSON
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: document.getElementById("name").value
+          email: document.getElementById("email").value,
+          visitDate: document.getElementById("visitDate").value,
+          clinic: document.getElementById("clinic").value,
+          fileNumber: document.getElementById("fileNumber").value,
+          patientStatus: document.getElementById("patientStatus").value,
+          dob: document.getElementById("dob").value,
+          gender: document.getElementById("gender").value,
+          patientType: document.getElementById("patientType").value
         })
       })
       .then(() => {
-        result.innerText = "✅ Submitted (check your Sheet tab 'data')";
+        result.innerText = "✅ Submitted! Check your sheet 'data'.";
         form.reset();
       })
       .catch(err => {

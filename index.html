@@ -28,12 +28,13 @@
     const quantity = document.getElementById("quantity");
     const price = document.getElementById("price");
     const total = document.getElementById("total");
+    const result = document.getElementById("result");
 
     // 🔹 Live calculation of total
     function updateTotal() {
       const q = parseFloat(quantity.value) || 0;
       const p = parseFloat(price.value) || 0;
-      total.value = q * p;
+      total.value = (q * p).toFixed(2);
     }
     quantity.addEventListener("input", updateTotal);
     price.addEventListener("input", updateTotal);
@@ -42,9 +43,8 @@
     form.addEventListener("submit", function(e) {
       e.preventDefault();
 
-      fetch("https://script.google.com/macros/s/AKfycbwDyt4o-kHJGiCtx25z8CJm5YbIHZJI043abxf-2sexMlxkQ8DbAMNRUSn6FwiWeafI/exec", {  // ⬅️ Replace this with your /exec URL
+      fetch("YOUR_GOOGLE_SCRIPT_EXEC_URL", {   // ⬅️ replace with your deployed /exec link
         method: "POST",
-        mode: "no-cors",  // use no-cors first to confirm data reaches sheet
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: document.getElementById("name").value,
@@ -54,14 +54,18 @@
           total: total.value
         })
       })
-      .then(() => {
-        document.getElementById("result").innerText =
-          "✅ Submitted successfully! (check sheet)";
-        form.reset();
-        total.value = "";
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          result.innerText = "✅ Submitted successfully!";
+          form.reset();
+          total.value = "";
+        } else {
+          result.innerText = "❌ Error: " + data.message;
+        }
       })
       .catch(err => {
-        document.getElementById("result").innerText = "❌ Error: " + err;
+        result.innerText = "❌ Fetch Error: " + err;
       });
     });
   </script>

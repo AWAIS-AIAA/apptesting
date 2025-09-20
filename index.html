@@ -1,13 +1,13 @@
-  <!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Mini App</title>
+  <title>Mini Order Form</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; }
     form { max-width: 400px; margin: auto; }
     input, button { width: 100%; padding: 10px; margin: 5px 0; }
-    #result { margin-top: 15px; font-weight: bold; color: green; }
+    #result { margin-top: 15px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -29,43 +29,41 @@
     const price = document.getElementById("price");
     const total = document.getElementById("total");
 
-    // Live calculation
+    // 🔹 Live calculation of total
     function updateTotal() {
       const q = parseFloat(quantity.value) || 0;
       const p = parseFloat(price.value) || 0;
       total.value = q * p;
     }
-
     quantity.addEventListener("input", updateTotal);
     price.addEventListener("input", updateTotal);
 
-    // Submit data to Google Apps Script
+    // 🔹 Submit form
     form.addEventListener("submit", function(e) {
       e.preventDefault();
- fetch("https://script.google.com/macros/s/AKfycbwDyt4o-kHJGiCtx25z8CJm5YbIHZJI043abxf-2sexMlxkQ8DbAMNRUSn6FwiWeafI/exec", {
-  method: "POST",
-  mode: "no-cors",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    quantity: quantity.value,
-    price: price.value,
-    total: total.value
-  })
-})
-.then(() => {
-  document.getElementById("result").innerText = "✅ Submitted successfully!";
-  form.reset();
-  total.value = "";
-})
-.catch(err => {
-  document.getElementById("result").innerText = "❌ Error: " + err;
-});
 
+      fetch("https://script.google.com/macros/s/AKfycbwDyt4o-kHJGiCtx25z8CJm5YbIHZJI043abxf-2sexMlxkQ8DbAMNRUSn6FwiWeafI/exec", {  // ⬅️ Replace this with your /exec URL
+        method: "POST",
+        mode: "no-cors",  // use no-cors first to confirm data reaches sheet
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+          quantity: quantity.value,
+          price: price.value,
+          total: total.value
+        })
+      })
+      .then(() => {
+        document.getElementById("result").innerText =
+          "✅ Submitted successfully! (check sheet)";
+        form.reset();
+        total.value = "";
+      })
+      .catch(err => {
+        document.getElementById("result").innerText = "❌ Error: " + err;
       });
     });
   </script>
 </body>
 </html>
-

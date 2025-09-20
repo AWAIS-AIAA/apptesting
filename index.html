@@ -2,39 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Google Sheet Test Form</title>
+  <title>Mini Calculator Form</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    label { display: block; margin-top: 10px; }
+    input { padding: 6px; margin-top: 4px; width: 200px; }
+    button { margin-top: 15px; padding: 8px 15px; cursor: pointer; }
+    #message { margin-top: 20px; font-weight: bold; }
+  </style>
 </head>
 <body>
-  <h2>Test Form</h2>
-  <form id="testForm">
-    <input type="text" id="name" placeholder="Enter your name" required>
+  <h2>Mini Calculator Form</h2>
+
+  <form id="myForm">
+    <label>Field 1:
+      <input type="number" id="field1" required>
+    </label>
+
+    <label>Field 2:
+      <input type="number" id="field2" required>
+    </label>
+
+    <label>Total:
+      <input type="number" id="total" readonly>
+    </label>
+
     <button type="submit">Submit</button>
   </form>
 
-  <div id="result"></div>
+  <div id="message"></div>
 
   <script>
-    const form = document.getElementById("testForm");
-    const result = document.getElementById("result");
+    const scriptURL = "YOUR_WEB_APP_URL_HERE"; // 🔗 Replace with Apps Script URL
 
-    form.addEventListener("submit", function(e) {
+    const field1 = document.getElementById("field1");
+    const field2 = document.getElementById("field2");
+    const total  = document.getElementById("total");
+    const form   = document.getElementById("myForm");
+    const message = document.getElementById("message");
+
+    // Live calculation
+    function updateTotal() {
+      const v1 = parseFloat(field1.value) || 0;
+      const v2 = parseFloat(field2.value) || 0;
+      total.value = v1 + v2;
+    }
+
+    field1.addEventListener("input", updateTotal);
+    field2.addEventListener("input", updateTotal);
+
+    // Submit to Google Sheets
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      message.textContent = "Submitting...";
 
-      fetch("https://script.google.com/macros/s/AKfycby28m7M4qPPoWPx4lwJOsYmAJAl52GyXd9o3b69tn0ZCQiDlzm_zv1GE8lC77kgDCMW/exec", {
-        method: "POST",
-        mode: "no-cors",   // 👈 first test without CORS errors
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: document.getElementById("name").value
-        })
-      })
-      .then(() => {
-        result.innerText = "✅ Submitted (check your Sheet tab 'data')";
-        form.reset();
-      })
-      .catch(err => {
-        result.innerText = "❌ Error: " + err;
-      });
+      const data = {
+        field1: field1.value,
+        field2: field2.value,
+        total: total.value
+      };
+
+      try {
+        const res = await fetch(scriptURL, {
+          method: "POST",
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (result.result === "success") {
+          message.textContent = "✅ Submitted successfully!";
+          form.reset();
+          total.value = "";
+        } else {
+          message.textContent = "❌ Error: " + result.error;
+        }
+      } catch (err) {
+        message.textContent = "❌ Fetch Error: " + err;
+      }
     });
   </script>
 </body>

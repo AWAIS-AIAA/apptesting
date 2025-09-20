@@ -1,4 +1,4 @@
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyYfAQvw-lrnJvs7Uh-MsAK44JoEWrz2RjWMpaa_BrH8BU85om7NRqTWilxh47zhc5q/exec"; // replace with your Google Apps Script URL
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycby7utPlsm3nnr4EFtWJwcoYRwx6sFrOJ1aWcYqZuFhSjGD_WDiR806uCqtPNrq8JJ16/exec"; // replace with your Google Apps Script URL
 
 // Load tokens into dropdown
 async function loadTokens() {

@@ -49,16 +49,13 @@
   <div id="result"></div>
 
   <script>
-  const form = document.getElementById("visitForm");
-  const result = document.getElementById("result");
+    const form = document.getElementById("visitForm");
+    const result = document.getElementById("result");
 
-  form.addEventListener("submit", function(e) {
-    e.preventDefault();
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
 
-    fetch("https://script.google.com/macros/s/AKfycbyFF9GBE00tbRIkVjMWcxFSJs999Q4hY03L_lHNG9SeDkdlOeeJ4N-zTHK0ZxctXxZB/exec", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+      const payload = {
         email: document.getElementById("email").value,
         visitDate: document.getElementById("visitDate").value,
         clinic: document.getElementById("clinic").value,
@@ -67,22 +64,27 @@
         dob: document.getElementById("dob").value,
         gender: document.getElementById("gender").value,
         patientType: document.getElementById("patientType").value
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.status === "success") {
-        result.innerText = "✅ Submitted! Data saved.";
-        form.reset();
-      } else {
-        result.innerText = "⚠️ Error: " + data.message;
-      }
-    })
-    .catch(err => {
-      result.innerText = "❌ Fetch Error: " + err;
-    });
-  });
-</script>
+      };
 
+      fetch("https://script.google.com/macros/s/AKfycbxoirIh-5cQdH2gSjueQ2yXH9iFJ2hc6O0WtzCi7ifJ8if2x-nSUK45x6JAFujReZoU/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Server response:", data);
+        if (data.status === "success") {
+          result.innerText = "✅ Submitted! Data saved.";
+          form.reset();
+        } else {
+          result.innerText = "⚠️ Error: " + data.message;
+        }
+      })
+      .catch(err => {
+        result.innerText = "❌ Fetch Error: " + err;
+      });
+    });
+  </script>
 </body>
 </html>

@@ -33,7 +33,8 @@
   <div id="message"></div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycby28m7M4qPPoWPx4lwJOsYmAJAl52GyXd9o3b69tn0ZCQiDlzm_zv1GE8lC77kgDCMW/exec"; // 🔗 Replace with Apps Script URL
+    // ✅ Your deployed Apps Script Web App URL
+    const scriptURL = "https://script.google.com/macros/s/AKfycby28m7M4qPPoWPx4lwJOsYmAJAl52GyXd9o3b69tn0ZCQiDlzm_zv1GE8lC77kgDCMW/exec";
 
     const field1 = document.getElementById("field1");
     const field2 = document.getElementById("field2");
@@ -41,7 +42,7 @@
     const form   = document.getElementById("myForm");
     const message = document.getElementById("message");
 
-    // Live calculation
+    // 🔹 Live total calculation
     function updateTotal() {
       const v1 = parseFloat(field1.value) || 0;
       const v2 = parseFloat(field2.value) || 0;
@@ -51,7 +52,7 @@
     field1.addEventListener("input", updateTotal);
     field2.addEventListener("input", updateTotal);
 
-    // Submit to Google Sheets
+    // 🔹 Submit data to Google Sheets
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       message.textContent = "Submitting...";
@@ -70,12 +71,12 @@
 
         const result = await res.json();
 
-        if (result.result === "success") {
+        if (result.status === "success") {
           message.textContent = "✅ Submitted successfully!";
           form.reset();
           total.value = "";
         } else {
-          message.textContent = "❌ Error: " + result.error;
+          message.textContent = "❌ Error: " + result.message;
         }
       } catch (err) {
         message.textContent = "❌ Fetch Error: " + err;

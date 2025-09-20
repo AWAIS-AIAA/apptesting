@@ -2,108 +2,72 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Mini Calculator Form</title>
+  <title>Mini App</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; }
+    body { font-family: Arial, sans-serif; padding: 20px; }
     label { display: block; margin-top: 10px; }
-    input { padding: 6px; margin-top: 4px; width: 200px; }
-    button { margin-top: 15px; padding: 8px 15px; cursor: pointer; }
-    #message { margin-top: 20px; font-weight: bold; }
-    #confirmation { margin-top: 15px; padding: 10px; border: 1px solid #ddd; background: #f9f9f9; display: none; }
+    input { padding: 5px; margin-top: 5px; }
+    button { margin-top: 15px; padding: 10px 15px; }
+    #result { margin-top: 15px; font-weight: bold; }
   </style>
 </head>
 <body>
-  <h2>Mini Calculator Form</h2>
-
-  <form id="myForm">
-    <label>Field 1:
-      <input type="number" id="field1" required>
-    </label>
-
-    <label>Field 2:
-      <input type="number" id="field2" required>
-    </label>
-
-    <label>Total:
-      <input type="number" id="total" readonly>
-    </label>
-
-    <button type="submit">Submit</button>
-  </form>
-
-  <div id="message"></div>
-  <div id="confirmation"></div>
+  <h2>Mini App (Save to Google Sheets)</h2>
+  
+  <label>Field 1: <input type="number" id="field1"></label>
+  <label>Field 2: <input type="number" id="field2"></label>
+  <label>Total: <input type="text" id="total" readonly></label>
+  
+  <button onclick="submitData()">Submit</button>
+  
+  <div id="result"></div>
 
   <script>
-    // ✅ Replace with your deployed Apps Script URL
+    // 👇 Use your new Web App URL
     const scriptURL = "https://script.google.com/macros/s/AKfycbz1pEUcMbem8DlTY-nqqPryaAKbGY327ObuoeKIS9GFjoSgW88_XPeCD3quwGqL2a6j/exec";
 
-    const field1 = document.getElementById("field1");
-    const field2 = document.getElementById("field2");
-    const total  = document.getElementById("total");
-    const form   = document.getElementById("myForm");
-    const message = document.getElementById("message");
-    const confirmation = document.getElementById("confirmation");
+    const f1 = document.getElementById("field1");
+    const f2 = document.getElementById("field2");
+    const total = document.getElementById("total");
+    const result = document.getElementById("result");
 
-    // 🔹 Live total calculation
+    // live calculation
     function updateTotal() {
-      const v1 = parseFloat(field1.value) || 0;
-      const v2 = parseFloat(field2.value) || 0;
-      total.value = v1 + v2;
+      const val1 = parseFloat(f1.value) || 0;
+      const val2 = parseFloat(f2.value) || 0;
+      total.value = val1 + val2;
     }
 
-    field1.addEventListener("input", updateTotal);
-    field2.addEventListener("input", updateTotal);
+    f1.addEventListener("input", updateTotal);
+    f2.addEventListener("input", updateTotal);
 
-    // 🔹 Submit data to Google Sheets
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      message.textContent = "Submitting...";
-      confirmation.style.display = "none";
-
+    async function submitData() {
       const data = {
-        field1: field1.value.trim(),
-        field2: field2.value.trim(),
-        total: total.value.trim()
+        field1: f1.value,
+        field2: f2.value,
+        total: total.value
       };
-
-      console.log("Sending data:", data);
 
       try {
         const res = await fetch(scriptURL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" }, // ✅ important
-          body: JSON.stringify(data)
+          body: JSON.stringify(data),
+          headers: { "Content-Type": "application/json" }
         });
 
-        const text = await res.text();
-        console.log("Raw response:", text);
-
-        let result;
-        try {
-          result = JSON.parse(text);
-        } catch (e) {
-          throw new Error("Invalid JSON returned: " + text);
-        }
-
-        if (result.status === "success") {
-          message.textContent = "✅ Submitted successfully!";
-          confirmation.style.display = "block";
-          confirmation.innerHTML = `
-            <strong>Saved Data:</strong><br>
-            Field1: ${result.received.field1} <br>
-            Field2: ${result.received.field2} <br>
-            Total: ${result.received.total}
-          `;
-          form.reset();
+        const json = await res.json();
+        if (json.status === "success") {
+          result.innerText = "✅ Data saved: " + JSON.stringify(json.received);
+          f1.value = "";
+          f2.value = "";
           total.value = "";
         } else {
-          message.textContent = "❌ Error: " + (result.message || "Unknown error");
+          result.innerText = "❌ Error: " + json.message;
         }
       } catch (err) {
-        message.textContent = "❌ Fetch Error: " + err.message;
+        result.innerText = "❌ Fetch Error: " + err;
       }
-    });
+    }
   </script>
 </body>
 </html>

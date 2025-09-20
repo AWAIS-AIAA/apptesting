@@ -9,6 +9,7 @@
     input { padding: 6px; margin-top: 4px; width: 200px; }
     button { margin-top: 15px; padding: 8px 15px; cursor: pointer; }
     #message { margin-top: 20px; font-weight: bold; }
+    #confirmation { margin-top: 15px; padding: 10px; border: 1px solid #ddd; background: #f9f9f9; display: none; }
   </style>
 </head>
 <body>
@@ -31,62 +32,78 @@
   </form>
 
   <div id="message"></div>
+  <div id="confirmation"></div>
 
   <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwLGeqZymwtuCy-I4zPxspOTZA5R_LbueY6ZvKbhGUQZv_5wujVsydoKm6WESdVFhsT/exec"; // paste fresh URL
+    // ✅ Replace with your deployed Apps Script URL
+    const scriptURL = "https://script.google.com/macros/s/AKfycbz1pEUcMbem8DlTY-nqqPryaAKbGY327ObuoeKIS9GFjoSgW88_XPeCD3quwGqL2a6j/exec";
 
-  const field1 = document.getElementById("field1");
-  const field2 = document.getElementById("field2");
-  const total  = document.getElementById("total");
-  const form   = document.getElementById("myForm");
-  const message = document.getElementById("message");
+    const field1 = document.getElementById("field1");
+    const field2 = document.getElementById("field2");
+    const total  = document.getElementById("total");
+    const form   = document.getElementById("myForm");
+    const message = document.getElementById("message");
+    const confirmation = document.getElementById("confirmation");
 
-  function updateTotal() {
-    const v1 = parseFloat(field1.value) || 0;
-    const v2 = parseFloat(field2.value) || 0;
-    total.value = v1 + v2;
-  }
-
-  field1.addEventListener("input", updateTotal);
-  field2.addEventListener("input", updateTotal);
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    message.textContent = "Submitting...";
-
-    const data = {
-      field1: field1.value,
-      field2: field2.value,
-      total: total.value
-    };
-
-    try {
-      const res = await fetch(scriptURL, {
-        method: "POST",
-        body: JSON.stringify(data)
-      });
-
-      const text = await res.text();   // first get raw response
-      console.log("Raw response:", text);
-
-      let result;
-      try {
-        result = JSON.parse(text);    // try parsing JSON
-      } catch (e) {
-        throw new Error("Invalid JSON returned: " + text);
-      }
-
-      if (result.status === "success") {
-        message.textContent = "✅ Submitted successfully!";
-        form.reset();
-        total.value = "";
-      } else {
-        message.textContent = "❌ Error: " + result.message;
-      }
-    } catch (err) {
-      message.textContent = "❌ Fetch Error: " + err.message;
+    // 🔹 Live total calculation
+    function updateTotal() {
+      const v1 = parseFloat(field1.value) || 0;
+      const v2 = parseFloat(field2.value) || 0;
+      total.value = v1 + v2;
     }
-  });
-</script>
+
+    field1.addEventListener("input", updateTotal);
+    field2.addEventListener("input", updateTotal);
+
+    // 🔹 Submit data to Google Sheets
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      message.textContent = "Submitting...";
+      confirmation.style.display = "none";
+
+      const data = {
+        field1: field1.value.trim(),
+        field2: field2.value.trim(),
+        total: total.value.trim()
+      };
+
+      console.log("Sending data:", data);
+
+      try {
+        const res = await fetch(scriptURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }, // ✅ important
+          body: JSON.stringify(data)
+        });
+
+        const text = await res.text();
+        console.log("Raw response:", text);
+
+        let result;
+        try {
+          result = JSON.parse(text);
+        } catch (e) {
+          throw new Error("Invalid JSON returned: " + text);
+        }
+
+        if (result.status === "success") {
+          message.textContent = "✅ Submitted successfully!";
+          confirmation.style.display = "block";
+          confirmation.innerHTML = `
+            <strong>Saved Data:</strong><br>
+            Field1: ${result.received.field1} <br>
+            Field2: ${result.received.field2} <br>
+            Total: ${result.received.total}
+          `;
+          form.reset();
+          total.value = "";
+        } else {
+          message.textContent = "❌ Error: " + (result.message || "Unknown error");
+        }
+      } catch (err) {
+        message.textContent = "❌ Fetch Error: " + err.message;
+      }
+    });
+  </script>
 </body>
 </html>

@@ -33,55 +33,60 @@
   <div id="message"></div>
 
   <script>
-    // ✅ Your deployed Apps Script Web App URL
-    const scriptURL = "https://script.google.com/macros/s/AKfycby28m7M4qPPoWPx4lwJOsYmAJAl52GyXd9o3b69tn0ZCQiDlzm_zv1GE8lC77kgDCMW/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbwLGeqZymwtuCy-I4zPxspOTZA5R_LbueY6ZvKbhGUQZv_5wujVsydoKm6WESdVFhsT/exec"; // paste fresh URL
 
-    const field1 = document.getElementById("field1");
-    const field2 = document.getElementById("field2");
-    const total  = document.getElementById("total");
-    const form   = document.getElementById("myForm");
-    const message = document.getElementById("message");
+  const field1 = document.getElementById("field1");
+  const field2 = document.getElementById("field2");
+  const total  = document.getElementById("total");
+  const form   = document.getElementById("myForm");
+  const message = document.getElementById("message");
 
-    // 🔹 Live total calculation
-    function updateTotal() {
-      const v1 = parseFloat(field1.value) || 0;
-      const v2 = parseFloat(field2.value) || 0;
-      total.value = v1 + v2;
-    }
+  function updateTotal() {
+    const v1 = parseFloat(field1.value) || 0;
+    const v2 = parseFloat(field2.value) || 0;
+    total.value = v1 + v2;
+  }
 
-    field1.addEventListener("input", updateTotal);
-    field2.addEventListener("input", updateTotal);
+  field1.addEventListener("input", updateTotal);
+  field2.addEventListener("input", updateTotal);
 
-    // 🔹 Submit data to Google Sheets
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      message.textContent = "Submitting...";
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    message.textContent = "Submitting...";
 
-      const data = {
-        field1: field1.value,
-        field2: field2.value,
-        total: total.value
-      };
+    const data = {
+      field1: field1.value,
+      field2: field2.value,
+      total: total.value
+    };
 
+    try {
+      const res = await fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(data)
+      });
+
+      const text = await res.text();   // first get raw response
+      console.log("Raw response:", text);
+
+      let result;
       try {
-        const res = await fetch(scriptURL, {
-          method: "POST",
-          body: JSON.stringify(data)
-        });
-
-        const result = await res.json();
-
-        if (result.status === "success") {
-          message.textContent = "✅ Submitted successfully!";
-          form.reset();
-          total.value = "";
-        } else {
-          message.textContent = "❌ Error: " + result.message;
-        }
-      } catch (err) {
-        message.textContent = "❌ Fetch Error: " + err;
+        result = JSON.parse(text);    // try parsing JSON
+      } catch (e) {
+        throw new Error("Invalid JSON returned: " + text);
       }
-    });
-  </script>
+
+      if (result.status === "success") {
+        message.textContent = "✅ Submitted successfully!";
+        form.reset();
+        total.value = "";
+      } else {
+        message.textContent = "❌ Error: " + result.message;
+      }
+    } catch (err) {
+      message.textContent = "❌ Fetch Error: " + err.message;
+    }
+  });
+</script>
 </body>
 </html>

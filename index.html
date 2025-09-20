@@ -2,72 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Mini App</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    label { display: block; margin-top: 10px; }
-    input { padding: 5px; margin-top: 5px; }
-    button { margin-top: 15px; padding: 10px 15px; }
-    #result { margin-top: 15px; font-weight: bold; }
-  </style>
+  <title>Google Sheet Test Form</title>
 </head>
 <body>
-  <h2>Mini App (Save to Google Sheets)</h2>
-  
-  <label>Field 1: <input type="number" id="field1"></label>
-  <label>Field 2: <input type="number" id="field2"></label>
-  <label>Total: <input type="text" id="total" readonly></label>
-  
-  <button onclick="submitData()">Submit</button>
-  
+  <h2>Test Form</h2>
+  <form id="testForm">
+    <input type="text" id="name" placeholder="Enter your name" required>
+    <button type="submit">Submit</button>
+  </form>
+
   <div id="result"></div>
 
   <script>
-    // 👇 Use your new Web App URL
-    const scriptURL = "https://script.google.com/macros/s/AKfycbx-kNw14qd0f7Eo3pz66Tk8eMvTqlfax7NvhSAxTdJ8BJGkWFRh5K6xNfHmYFwrCK-z/exec";
-
-    const f1 = document.getElementById("field1");
-    const f2 = document.getElementById("field2");
-    const total = document.getElementById("total");
+    const form = document.getElementById("testForm");
     const result = document.getElementById("result");
 
-    // live calculation
-    function updateTotal() {
-      const val1 = parseFloat(f1.value) || 0;
-      const val2 = parseFloat(f2.value) || 0;
-      total.value = val1 + val2;
-    }
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
 
-    f1.addEventListener("input", updateTotal);
-    f2.addEventListener("input", updateTotal);
-
-    async function submitData() {
-      const data = {
-        field1: f1.value,
-        field2: f2.value,
-        total: total.value
-      };
-
-      try {
-        const res = await fetch(scriptURL, {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: { "Content-Type": "application/json" }
-        });
-
-        const json = await res.json();
-        if (json.status === "success") {
-          result.innerText = "✅ Data saved: " + JSON.stringify(json.received);
-          f1.value = "";
-          f2.value = "";
-          total.value = "";
-        } else {
-          result.innerText = "❌ Error: " + json.message;
-        }
-      } catch (err) {
-        result.innerText = "❌ Fetch Error: " + err;
-      }
-    }
+      fetch("https://script.google.com/macros/s/AKfycbwIDBJjO_2LTQnERBLqUm4fsLQYz6spG47bbLZiNCAiL2XdwQRvF1HYS7KwIzRRC4bS/exec", {
+        method: "POST",
+        mode: "no-cors",   // 👈 first test without CORS errors
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: document.getElementById("name").value
+        })
+      })
+      .then(() => {
+        result.innerText = "✅ Submitted (check your Sheet tab 'data')";
+        form.reset();
+      })
+      .catch(err => {
+        result.innerText = "❌ Error: " + err;
+      });
+    });
   </script>
 </body>
 </html>

@@ -43,7 +43,7 @@
     form.addEventListener("submit", function(e) {
       e.preventDefault();
 
-      fetch("YOUR_GOOGLE_SCRIPT_EXEC_URL", {   // ⬅️ replace with your deployed /exec link
+      fetch("https://script.google.com/macros/s/AKfycbwDyt4o-kHJGiCtx25z8CJm5YbIHZJI043abxf-2sexMlxkQ8DbAMNRUSn6FwiWeafI/exec", {   // ⬅️ replace with your deployed /exec link
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

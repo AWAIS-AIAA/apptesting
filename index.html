@@ -30,7 +30,7 @@
     const total = document.getElementById("total");
     const result = document.getElementById("result");
 
-    // 🔹 Live calculation of total
+    // 🔹 Live total calculation
     function updateTotal() {
       const q = parseFloat(quantity.value) || 0;
       const p = parseFloat(price.value) || 0;
@@ -43,7 +43,7 @@
     form.addEventListener("submit", function(e) {
       e.preventDefault();
 
-      fetch("https://script.google.com/macros/s/AKfycbwDyt4o-kHJGiCtx25z8CJm5YbIHZJI043abxf-2sexMlxkQ8DbAMNRUSn6FwiWeafI/exec", {   // ⬅️ replace with your deployed /exec link
+      fetch("https://script.google.com/macros/s/AKfycbwDyt4o-kHJGiCtx25z8CJm5YbIHZJI043abxf-2sexMlxkQ8DbAMNRUSn6FwiWeafI/exec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

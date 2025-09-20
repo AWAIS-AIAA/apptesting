@@ -1,103 +1,64 @@
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycby7utPlsm3nnr4EFtWJwcoYRwx6sFrOJ1aWcYqZuFhSjGD_WDiR806uCqtPNrq8JJ16/exec"; // replace with your Google Apps Script URL
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyBypcYcijBIJQynVbfhGrhdsdaoNRSXAX-tqqG7fKD19MNQaoOWjk0NXIg1vFq55AB/exec"; // replace with your Web App URL
 
-// Load tokens into dropdown
-async function loadTokens() {
-  const dropdowns = document.querySelectorAll("#tokenDropdown");
-  if (!dropdowns.length) return;
+function showMsg(msg, success=true){
+  const alertBox = document.getElementById("msg");
+  if(!alertBox) return;
+  alertBox.classList.remove("d-none","alert-success","alert-danger");
+  alertBox.classList.add(success?"alert-success":"alert-danger");
+  alertBox.textContent = msg;
+}
 
+async function loadTokens(){
   const res = await fetch(`${WEBAPP_URL}?action=getTokens`);
   const tokens = await res.json();
-
-  dropdowns.forEach(dropdown => {
-    dropdown.innerHTML = "";
-    tokens.forEach(t => {
+  document.querySelectorAll("#tokenDropdown").forEach(dropdown=>{
+    dropdown.innerHTML="";
+    tokens.forEach(t=>{
       const opt = document.createElement("option");
-      opt.value = t;
-      opt.textContent = t;
+      opt.value=t;
+      opt.textContent=t;
       dropdown.appendChild(opt);
     });
   });
 }
 
-// Helper to show messages
-function showMsg(msg, isSuccess = true) {
-  const alertBox = document.getElementById("msg");
-  alertBox.classList.remove("d-none", "alert-success", "alert-danger");
-  alertBox.classList.add(isSuccess ? "alert-success" : "alert-danger");
-  alertBox.textContent = msg;
-}
-
-// Station 1
+// ---------------- Station 1 ----------------
 const regForm = document.getElementById("regForm");
-if (regForm) {
-  regForm.addEventListener("submit", async e => {
+if(regForm){
+  regForm.addEventListener("submit", async e=>{
     e.preventDefault();
     const data = Object.fromEntries(new FormData(regForm).entries());
-    const res = await fetch(WEBAPP_URL, {
-      method: "POST",
-      body: JSON.stringify({ station: "registration", token: "", data }),
+    const res = await fetch(WEBAPP_URL,{
+      method:"POST",
+      body: JSON.stringify({station:"registration", token:"", data})
     });
     const out = await res.json();
-    showMsg(out.status === "success" ? `✅ Token: ${out.token}` : out.message, out.status === "success");
+    showMsg(out.status==="success"?`✅ Token: ${out.token}`:out.message,out.status==="success");
     if(out.status==="success") regForm.reset();
   });
 }
 
-// Station 2
-const triageForm = document.getElementById("triageForm");
-if (triageForm) {
-  loadTokens();
-  triageForm.addEventListener("submit", async e => {
-    e.preventDefault();
-    const token = document.getElementById("tokenDropdown").value;
-    const data = Object.fromEntries(new FormData(triageForm).entries());
-    const res = await fetch(WEBAPP_URL, {
-      method: "POST",
-      body: JSON.stringify({ station: "triage", token, data }),
+// ---------------- Stations 2,3,4 ----------------
+["triage","doctor","pharmacy"].forEach(station=>{
+  const form = document.getElementById(station+"Form");
+  if(form){
+    loadTokens();
+    form.addEventListener("submit", async e=>{
+      e.preventDefault();
+      const token = document.getElementById("tokenDropdown").value;
+      const data = Object.fromEntries(new FormData(form).entries());
+      const res = await fetch(WEBAPP_URL,{
+        method:"POST",
+        body: JSON.stringify({station, token, data})
+      });
+      const out = await res.json();
+      showMsg(out.status==="success"?`✅ ${station} saved!`:out.message,out.status==="success");
+      if(out.status==="success") form.reset();
     });
-    const out = await res.json();
-    showMsg(out.status === "success" ? "✅ Triage saved!" : out.message, out.status === "success");
-    if(out.status==="success") triageForm.reset();
-  });
-}
+  }
+});
 
-// Station 3
-const doctorForm = document.getElementById("doctorForm");
-if (doctorForm) {
-  loadTokens();
-  doctorForm.addEventListener("submit", async e => {
-    e.preventDefault();
-    const token = document.getElementById("tokenDropdown").value;
-    const data = Object.fromEntries(new FormData(doctorForm).entries());
-    const res = await fetch(WEBAPP_URL, {
-      method: "POST",
-      body: JSON.stringify({ station: "doctor", token, data }),
-    });
-    const out = await res.json();
-    showMsg(out.status === "success" ? "✅ Doctor notes saved!" : out.message, out.status === "success");
-    if(out.status==="success") doctorForm.reset();
-  });
-}
-
-// Station 4
-const pharmacyForm = document.getElementById("pharmacyForm");
-if (pharmacyForm) {
-  loadTokens();
-  pharmacyForm.addEventListener("submit", async e => {
-    e.preventDefault();
-    const token = document.getElementById("tokenDropdown").value;
-    const data = Object.fromEntries(new FormData(pharmacyForm).entries());
-    const res = await fetch(WEBAPP_URL, {
-      method: "POST",
-      body: JSON.stringify({ station: "pharmacy", token, data }),
-    });
-    const out = await res.json();
-    showMsg(out.status === "success" ? "✅ Pharmacy data saved!" : out.message, out.status === "success");
-    if(out.status==="success") pharmacyForm.reset();
-  });
-}
-
-// Dashboard
+// ---------------- Dashboard ----------------
 const dashboardTable = document.getElementById("dashboardTable");
 if(dashboardTable){
   async function loadDashboard(){
@@ -107,11 +68,7 @@ if(dashboardTable){
     tbody.innerHTML="";
     tokens.forEach(token=>{
       const row = document.createElement("tr");
-      row.innerHTML = `<td>${token}</td>
-        <td>✅</td>
-        <td>❌</td>
-        <td>❌</td>
-        <td>❌</td>`;
+      row.innerHTML = `<td>${token}</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td>`;
       tbody.appendChild(row);
     });
   }

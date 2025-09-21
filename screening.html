@@ -10,11 +10,34 @@
 <div class="container py-5">
 <h2>Screening</h2>
 <form id="screenForm" class="card p-4 shadow-sm">
-  <select id="tokenDropdown" class="form-select mb-2" required></select>
+  <select id="tokenDropdown" class="form-select mb-2" name="Token" required></select>
   <input type="date" class="form-control mb-2" name="Visit Date" required>
   <select class="form-select mb-2" name="Clinic" required>
     <option value="">Select Clinic</option>
-    <!-- Add same clinic options as Reception -->
+    <option>Baldia</option>
+    <option>Bhitaiabad</option>
+    <option>Bilal</option>
+    <option>Chishti Nagar</option>
+    <option>Ghaggar Phatak</option>
+    <option>Islamia</option>
+    <option>Ittehad</option>
+    <option>Ittehad OT</option>
+    <option>Jamali</option>
+    <option>Khair Muhammad Goth</option>
+    <option>Khairabad</option>
+    <option>Machar Gujro</option>
+    <option>Majeed Colony IIL</option>
+    <option>Moach Goth</option>
+    <option>North</option>
+    <option>Pipri</option>
+    <option>Saindad</option>
+    <option>Saleh Muhammad Goth</option>
+    <option>Sherpao</option>
+    <option>Shireen Jinnah</option>
+    <option>Tameer-e-Millat</option>
+    <option>Yousuf 4K</option>
+    <option>Yousuf Sab Goth</option>
+    <option>Zareena Colony</option>
   </select>
   <input class="form-control mb-2" name="Technician Name" placeholder="Technician Name" required>
   <select class="form-select mb-2" name="اداسی، افسردگی، یا  مایوسی  کا  احساس" required>
@@ -52,9 +75,12 @@
     <option>Leaflet Provided</option>
   </select>
   <input class="form-control mb-2" name="Notes" placeholder="Notes">
-  <button class="btn btn-primary" type="submit">Submit Screening</button>
+  <button class="btn btn-success" type="submit">Submit Screening</button>
 </form>
-<div class="mt-3 alert alert-info d-none" id="msg"></div>
+<script>
+loadTokens("tokenDropdown");
+submitForm("screenForm","screening");
+</script>
 </div>
 </body>
 </html>

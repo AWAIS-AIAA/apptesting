@@ -1,4 +1,4 @@
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwwedwhqOBxK-W_5tZgSxEOth0JIy5kwUbW0_5nTvBsSF-L5lNYFC8X66hhSqUPxIB8/exec"; // Replace with your Web App URL
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxHF7Vh_CMO3wQzalXDDKAU1c-96w4KV5NVraJu3Ls5SuY2U_RVpCGu9_hs1TFC2dHk/exec";
 
 function showMsg(msg, success=true){
   const alertBox = document.getElementById("msg");
@@ -33,7 +33,7 @@ async function loadFileNumbers(dropdownId){
   }
 }
 
-// ---------------- Station 1 ----------------
+// Station 1
 const regForm = document.getElementById("regForm");
 if(regForm){
   regForm.addEventListener("submit", async e=>{
@@ -53,7 +53,7 @@ if(regForm){
   });
 }
 
-// ---------------- Stations 2,3,4 ----------------
+// Stations 2,3,4
 [
   {station:"triage", formId:"triageForm", dropdownId:"tokenDropdown"},
   {station:"doctor", formId:"doctorForm", dropdownId:"tokenDropdown"},
@@ -83,7 +83,7 @@ if(regForm){
   }
 });
 
-// ---------------- Dashboard ----------------
+// Dashboard
 const dashboardTable = document.getElementById("dashboardTable");
 if(dashboardTable){
   async function loadDashboard(){

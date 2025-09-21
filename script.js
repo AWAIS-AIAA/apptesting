@@ -1,110 +1,59 @@
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxsMHMPXaChsfL19bLdYi0B2uehcZeCwWHle7iNfVKDVQNxz5LqZmi-WwAWJY3DHqrU/exec";
+// 🔹 Replace with your deployed Web App URL
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwiQF8kvbUfjCjxfQ0Gws9EKRDcTB-GyFfYcQRvfbgxbNr9tjIwA1zH6mZQebCbolkP/exec";
 
-function showMsg(msg, success=true){
-  const alertBox = document.getElementById("msg");
-  if(!alertBox) return;
-  alertBox.classList.remove("d-none","alert-success","alert-danger");
-  alertBox.classList.add(success?"alert-success":"alert-danger");
-  alertBox.textContent = msg;
-}
-
-async function loadFileNumbers(dropdownId){
-  try{
-    const res = await fetch(`${WEBAPP_URL}?action=getFileNumbers`);
-    const fileNumbers = await res.json();
-    const dropdown = document.getElementById(dropdownId);
-    if(!dropdown) return;
-    dropdown.innerHTML = "";
-    if(fileNumbers.length===0){
-      const opt = document.createElement("option");
-      opt.value="";
-      opt.textContent="No patients registered yet";
-      dropdown.appendChild(opt);
-      return;
-    }
-    fileNumbers.forEach(fn=>{
-      const opt = document.createElement("option");
-      opt.value=fn;
-      opt.textContent=fn;
-      dropdown.appendChild(opt);
+// 🔹 Load all available tokens from Reception for dropdowns
+async function loadTokens(dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  dropdown.innerHTML = "<option value=''>Select Token</option>"; // default option
+  try {
+    const res = await fetch(WEBAPP_URL);           // fetch tokens via doGet
+    const tokens = await res.json();
+    tokens.forEach(token => {
+      const option = document.createElement("option");
+      option.value = token;
+      option.text = token;
+      dropdown.appendChild(option);
     });
-  }catch(err){
-    console.error("Error loading File Numbers:", err);
+  } catch (err) {
+    console.error("Error loading tokens:", err);
+    alert("❌ Could not load tokens. Please try again.");
   }
 }
 
-// Reception form
-const recForm = document.getElementById("recForm");
-if(recForm){
-  recForm.addEventListener("submit", async e=>{
+// 🔹 Handle form submission for any station
+function submitForm(formId, sheetName) {
+  const form = document.getElementById(formId);
+  form.addEventListener("submit", async e => {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(recForm).entries());
-    try{
-      const res = await fetch(WEBAPP_URL,{
-        method:"POST",
-        body: JSON.stringify({station:"reception", data})
-      });
-      const out = await res.json();
-      showMsg(out.status==="success"?`✅ Registered: File Number ${out.fileNumber}`:out.message,out.status==="success");
-      if(out.status==="success") recForm.reset();
-    }catch(err){
-      showMsg("❌ Error: "+err,false);
-    }
-  });
-}
 
-// Other stations
-[
-  {station:"screening", formId:"screenForm", dropdownId:"tokenDropdown"},
-  {station:"counsellor", formId:"counForm", dropdownId:"tokenDropdown"},
-  {station:"antidepressants", formId:"antiForm", dropdownId:"tokenDropdown"}
-].forEach(s=>{
-  const form = document.getElementById(s.formId);
-  if(form){
-    loadFileNumbers(s.dropdownId);
-    form.addEventListener("submit", async e=>{
-      e.preventDefault();
-      const token = document.getElementById(s.dropdownId).value;
-      if(!token){ showMsg("❌ Please select a File Number", false); return; }
-      const data = Object.fromEntries(new FormData(form).entries());
-      try{
-        const res = await fetch(WEBAPP_URL,{
-          method:"POST",
-          body: JSON.stringify({station:s.station, data})
-        });
-        const out = await res.json();
-        showMsg(out.status==="success"?`✅ ${s.station} submitted!`:out.message,out.status==="success");
-        if(out.status==="success") form.reset();
-        loadFileNumbers(s.dropdownId);
-      }catch(err){
-        showMsg("❌ Error: "+err,false);
+    // Gather all form data into an object
+    const data = { sheet: sheetName };
+    [...form.elements].forEach(el => {
+      if (el.name) {
+        data[el.name] = el.value;
       }
     });
-  }
-});
 
-// Dashboard
-const dashboardTable = document.getElementById("dashboardTable");
-if(dashboardTable){
-  async function loadDashboard(){
-    try{
-      const res = await fetch(`${WEBAPP_URL}?action=getDashboard`);
-      const data = await res.json();
-      const tbody = dashboardTable.querySelector("tbody");
-      tbody.innerHTML = "";
-      data.forEach(row=>{
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${row.fileNumber}</td>
-          <td>${row.reception?"✅":"❌"}</td>
-          <td>${row.screening?"✅":"❌"}</td>
-          <td>${row.counsellor?"✅":"❌"}</td>
-          <td>${row.antidepressants?"✅":"❌"}</td>
-        `;
-        tbody.appendChild(tr);
+    try {
+      // Send data to Google Apps Script Web App
+      await fetch(WEBAPP_URL, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+        mode: "no-cors" // required due to CORS limitations with GAS
       });
-    }catch(err){console.error("Error loading dashboard:", err);}
-  }
-  loadDashboard();
-  setInterval(()=>{ loadDashboard(); }, 5000);
+
+      alert("✅ Submitted successfully!");
+      form.reset();
+
+      // Reload tokens for downstream stations
+      if (sheetName !== "reception") {
+        loadTokens("tokenDropdown");
+      }
+
+    } catch (err) {
+      console.error("Submission error:", err);
+      alert("❌ Error submitting data: " + err);
+    }
+  });
 }

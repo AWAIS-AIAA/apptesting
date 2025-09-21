@@ -8,11 +8,11 @@
 </head>
 <body class="bg-light">
 <div class="container py-5">
-<h2 class="mb-4">📊 Token Dashboard</h2>
-<table class="table table-bordered table-striped" id="dashboardTable">
+<h2>Token Dashboard</h2>
+<table class="table table-bordered table-striped shadow-sm" id="dashboardTable">
   <thead class="table-dark">
     <tr>
-      <th>Token</th>
+      <th>File Number</th>
       <th>Registration</th>
       <th>Triage</th>
       <th>Doctor</th>
@@ -22,14 +22,8 @@
   <tbody></tbody>
 </table>
 </div>
-
-<script>
-  // Auto-refresh dashboard every 5 seconds
-  setInterval(()=>{
-    const event = new Event('loadDashboard'); 
-    window.dispatchEvent(event);
-  }, 5000);
-
+</body>
+</html>
   // Listen for custom event to reload
   window.addEventListener('loadDashboard', ()=>{
     if(typeof loadDashboard === "function") loadDashboard();

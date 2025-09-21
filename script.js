@@ -1,4 +1,4 @@
-const WEBAPP_URL = "YOUR_DEPLOYED_WEBAPP_URL"; // Replace with your Web App URL
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyBypcYcijBIJQynVbfhGrhdsdaoNRSXAX-tqqG7fKD19MNQaoOWjk0NXIg1vFq55AB/exec"; // Replace with your Web App URL
 
 // ---------------- Show messages ----------------
 function showMsg(msg, success=true){

@@ -90,24 +90,27 @@ const dashboardTable = document.getElementById("dashboardTable");
 if(dashboardTable){
   async function loadDashboard(){
     try{
-      const res = await fetch(`${WEBAPP_URL}?action=getTokens`);
-      const tokens = await res.json();
+      const res = await fetch(`${WEBAPP_URL}?action=getDashboard`);
+      const data = await res.json();
       const tbody = dashboardTable.querySelector("tbody");
       tbody.innerHTML = "";
-      tokens.forEach(token=>{
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${token}</td>
-          <td>✅</td>
-          <td>❌</td>
-          <td>❌</td>
-          <td>❌</td>
+
+      data.forEach(row=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.token}</td>
+          <td>${row.registration?"✅":"❌"}</td>
+          <td>${row.triage?"✅":"❌"}</td>
+          <td>${row.doctor?"✅":"❌"}</td>
+          <td>${row.pharmacy?"✅":"❌"}</td>
         `;
-        tbody.appendChild(row);
+        tbody.appendChild(tr);
       });
+
     }catch(err){
       console.error("Error loading dashboard:", err);
     }
   }
   loadDashboard();
 }
+

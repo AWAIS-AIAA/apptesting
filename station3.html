@@ -8,21 +8,20 @@
 </head>
 <body class="bg-light">
 <div class="container py-5">
-<h2 class="mb-4">👨‍⚕️ Station 3 - Doctor</h2>
+<h2>Station 3 - Doctor</h2>
 <form id="doctorForm" class="card p-4 shadow-sm">
-  <div class="mb-3">
-    <label class="form-label">Select Token</label>
-    <select id="tokenDropdown" class="form-select" required></select>
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Diagnosis</label>
-    <input type="text" name="diagnosis" class="form-control" required>
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Prescription</label>
-    <input type="text" name="prescription" class="form-control" required>
-  </div>
-  <button type="submit" class="btn btn-primary">Submit Doctor Notes</button>
+  <select id="tokenDropdown" class="form-select mb-2" required></select>
+  <input class="form-control mb-2" name="Counsellor Name" placeholder="Counsellor Name">
+  <input class="form-control mb-2" name="Patient Status" placeholder="Patient Status">
+  <input class="form-control mb-2" name="PHQ-9 Score" placeholder="PHQ-9 Score">
+  <input class="form-control mb-2" name="GAD-7 Score" placeholder="GAD-7 Score">
+  <input class="form-control mb-2" name="Risk of Self Harm/Suicide" placeholder="Risk">
+  <input class="form-control mb-2" name="Antidepressant Prescribed" placeholder="Antidepressant Prescribed">
+  <input class="form-control mb-2" name="Currently on Antidepressants" placeholder="Currently on Antidepressants">
+  <input class="form-control mb-2" name="Action" placeholder="Action">
+  <input class="form-control mb-2" name="Session No" placeholder="Session No">
+  <input class="form-control mb-2" name="Reason for Treatment End" placeholder="Reason">
+  <button class="btn btn-primary mt-2" type="submit">Submit Doctor</button>
 </form>
 <div class="mt-3 alert alert-info d-none" id="msg"></div>
 </div>

@@ -9,20 +9,24 @@
 <body class="bg-light">
 <div class="container py-5">
 <h2>Antidepressants</h2>
-<form id="antiForm" class="card p-4 shadow-sm">
-  <select id="tokenDropdown" class="form-select mb-2" required></select>
+<form id="rxForm" class="card p-4 shadow-sm">
+  <select id="tokenDropdown" class="form-select mb-2" name="Token" required></select>
   <input type="date" class="form-control mb-2" name="Prescribed Date" required>
   <select class="form-select mb-2" name="Clinic" required>
     <option value="">Select Clinic</option>
-    <!-- Add same clinic options as Reception -->
+    <!-- same clinic options -->
   </select>
+  <input class="form-control mb-2" name="File Number" placeholder="File Number" required>
   <input class="form-control mb-2" name="Fluoxetine 20mg - Tabs" placeholder="Fluoxetine 20mg - Tabs">
   <input class="form-control mb-2" name="Escitalopram 10mg - Tabs" placeholder="Escitalopram 10mg - Tabs">
   <input class="form-control mb-2" name="Sertraline 100mg - Tabs" placeholder="Sertraline 100mg - Tabs">
   <input class="form-control mb-2" name="Notes" placeholder="Notes">
-  <button class="btn btn-primary" type="submit">Submit Antidepressants</button>
+  <button class="btn btn-info" type="submit">Submit Antidepressants</button>
 </form>
-<div class="mt-3 alert alert-info d-none" id="msg"></div>
+<script>
+loadTokens("tokenDropdown");
+submitForm("rxForm","antidepressants");
+</script>
 </div>
 </body>
 </html>

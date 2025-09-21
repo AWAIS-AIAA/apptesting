@@ -13,7 +13,7 @@
   <thead class="table-dark">
     <tr>
       <th>Token</th>
-      <th>Registered</th>
+      <th>Registration</th>
       <th>Triage</th>
       <th>Doctor</th>
       <th>Pharmacy</th>
@@ -22,5 +22,19 @@
   <tbody></tbody>
 </table>
 </div>
+
+<script>
+  // Auto-refresh dashboard every 5 seconds
+  setInterval(()=>{
+    const event = new Event('loadDashboard'); 
+    window.dispatchEvent(event);
+  }, 5000);
+
+  // Listen for custom event to reload
+  window.addEventListener('loadDashboard', ()=>{
+    if(typeof loadDashboard === "function") loadDashboard();
+  });
+</script>
+
 </body>
 </html>

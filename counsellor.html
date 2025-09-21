@@ -10,11 +10,11 @@
 <div class="container py-5">
 <h2>Counsellor</h2>
 <form id="counForm" class="card p-4 shadow-sm">
-  <select id="tokenDropdown" class="form-select mb-2" required></select>
+  <select id="tokenDropdown" class="form-select mb-2" name="Token" required></select>
   <input type="date" class="form-control mb-2" name="Visit Date" required>
   <select class="form-select mb-2" name="Clinic" required>
     <option value="">Select Clinic</option>
-    <!-- Add same clinic options as Reception -->
+    <!-- same clinic options -->
   </select>
   <input class="form-control mb-2" name="Counsellor Name" placeholder="Counsellor Name" required>
   <select class="form-select mb-2" name="Patient Status" required>
@@ -47,14 +47,13 @@
     <option>Referred to Tertiary Care</option>
   </select>
   <input class="form-control mb-2" name="Session No" placeholder="Session No">
-  <select class="form-select mb-2" name="Reason for Treatment End">
-    <option value="">Select Reason</option>
-    <option>Referred to Tertiary Care</option>
-    <option>Lost to Follow-up</option>
-  </select>
-  <button class="btn btn-primary" type="submit">Submit Counsellor</button>
+  <input class="form-control mb-2" name="Reason for Treatment End" placeholder="Reason for Treatment End">
+  <button class="btn btn-warning" type="submit">Submit Counsellor</button>
 </form>
-<div class="mt-3 alert alert-info d-none" id="msg"></div>
+<script>
+loadTokens("tokenDropdown");
+submitForm("counForm","counsellor");
+</script>
 </div>
 </body>
 </html>

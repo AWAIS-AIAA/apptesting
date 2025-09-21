@@ -1,5 +1,5 @@
 // 🔹 Replace with your deployed Web App URL
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwiQF8kvbUfjCjxfQ0Gws9EKRDcTB-GyFfYcQRvfbgxbNr9tjIwA1zH6mZQebCbolkP/exec";
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzkHihudV-MHhzj2NLUbsLK2jjH75k5emY75sLGWHCmv6WF6lTLc8HYrxO_-rcZMuPO/exec";
 
 // 🔹 Load all available tokens from Reception for dropdowns
 async function loadTokens(dropdownId) {

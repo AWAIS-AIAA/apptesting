@@ -111,6 +111,6 @@ if(dashboardTable){
       console.error("Error loading dashboard:", err);
     }
   }
-  loadDashboard();
+  loadDashboard(); // Initial load
 }
 

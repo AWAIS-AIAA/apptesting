@@ -8,21 +8,15 @@
 </head>
 <body class="bg-light">
 <div class="container py-5">
-<h2 class="mb-4">💊 Station 4 - Pharmacy</h2>
+<h2>Station 4 - Pharmacy</h2>
 <form id="pharmacyForm" class="card p-4 shadow-sm">
-  <div class="mb-3">
-    <label class="form-label">Select Token</label>
-    <select id="tokenDropdown" class="form-select" required></select>
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Medicines</label>
-    <input type="text" name="medicines" class="form-control" required>
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Remarks</label>
-    <input type="text" name="remarks" class="form-control">
-  </div>
-  <button type="submit" class="btn btn-primary">Submit Pharmacy Data</button>
+  <select id="tokenDropdown" class="form-select mb-2" required></select>
+  <input type="date" class="form-control mb-2" name="Prescribed Date">
+  <input class="form-control mb-2" name="Fluoxetine 20mg - Tabs" placeholder="Fluoxetine 20mg">
+  <input class="form-control mb-2" name="Escitalopram 10mg - Tabs" placeholder="Escitalopram 10mg">
+  <input class="form-control mb-2" name="Sertraline 100mg - Tabs" placeholder="Sertraline 100mg">
+  <input class="form-control mb-2" name="Notes" placeholder="Notes">
+  <button class="btn btn-primary mt-2" type="submit">Submit Pharmacy</button>
 </form>
 <div class="mt-3 alert alert-info d-none" id="msg"></div>
 </div>

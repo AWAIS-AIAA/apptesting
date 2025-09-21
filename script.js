@@ -1,4 +1,4 @@
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxHF7Vh_CMO3wQzalXDDKAU1c-96w4KV5NVraJu3Ls5SuY2U_RVpCGu9_hs1TFC2dHk/exec";
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxsMHMPXaChsfL19bLdYi0B2uehcZeCwWHle7iNfVKDVQNxz5LqZmi-WwAWJY3DHqrU/exec";
 
 function showMsg(msg, success=true){
   const alertBox = document.getElementById("msg");
@@ -33,31 +33,31 @@ async function loadFileNumbers(dropdownId){
   }
 }
 
-// Station 1
-const regForm = document.getElementById("regForm");
-if(regForm){
-  regForm.addEventListener("submit", async e=>{
+// Reception form
+const recForm = document.getElementById("recForm");
+if(recForm){
+  recForm.addEventListener("submit", async e=>{
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(regForm).entries());
+    const data = Object.fromEntries(new FormData(recForm).entries());
     try{
       const res = await fetch(WEBAPP_URL,{
         method:"POST",
-        body: JSON.stringify({station:"registration", data})
+        body: JSON.stringify({station:"reception", data})
       });
       const out = await res.json();
       showMsg(out.status==="success"?`✅ Registered: File Number ${out.fileNumber}`:out.message,out.status==="success");
-      if(out.status==="success") regForm.reset();
+      if(out.status==="success") recForm.reset();
     }catch(err){
       showMsg("❌ Error: "+err,false);
     }
   });
 }
 
-// Stations 2,3,4
+// Other stations
 [
-  {station:"triage", formId:"triageForm", dropdownId:"tokenDropdown"},
-  {station:"doctor", formId:"doctorForm", dropdownId:"tokenDropdown"},
-  {station:"pharmacy", formId:"pharmacyForm", dropdownId:"tokenDropdown"}
+  {station:"screening", formId:"screenForm", dropdownId:"tokenDropdown"},
+  {station:"counsellor", formId:"counForm", dropdownId:"tokenDropdown"},
+  {station:"antidepressants", formId:"antiForm", dropdownId:"tokenDropdown"}
 ].forEach(s=>{
   const form = document.getElementById(s.formId);
   if(form){
@@ -96,10 +96,10 @@ if(dashboardTable){
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${row.fileNumber}</td>
-          <td>${row.registration?"✅":"❌"}</td>
-          <td>${row.triage?"✅":"❌"}</td>
-          <td>${row.doctor?"✅":"❌"}</td>
-          <td>${row.pharmacy?"✅":"❌"}</td>
+          <td>${row.reception?"✅":"❌"}</td>
+          <td>${row.screening?"✅":"❌"}</td>
+          <td>${row.counsellor?"✅":"❌"}</td>
+          <td>${row.antidepressants?"✅":"❌"}</td>
         `;
         tbody.appendChild(tr);
       });
